@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  repository-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify canonical static app
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s index.html
+          grep -q '<title>Genevieve — Tarot × Astrology</title>' index.html
+          grep -q 'Draw the three cards' index.html
+          grep -q 'const ranks=' index.html
+          test ! -e vercel.json
+          test ! -e netlify.toml
